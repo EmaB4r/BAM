@@ -1,0 +1,21 @@
+    push 0
+    push 0
+    dup
+    print
+    push 1
+    dup
+    print
+@calc
+    dup
+    roll 3
+    add
+    dup
+    print
+    roll 3
+    roll 3
+    push 1
+    add
+    dup
+    roll 4
+    push 15
+    jne calc
