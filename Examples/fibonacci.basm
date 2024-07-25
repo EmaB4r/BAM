@@ -5,6 +5,7 @@
     push 1
     dup
     print
+    
 @calc
     dup
     roll 3

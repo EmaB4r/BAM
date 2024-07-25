@@ -1,10 +1,5 @@
 #!/bin/bash
 
-cd Basm
-make
-mv basm ..
-cd ..
-cd Bam
-make
-mv bam ..
-cd ..
+gcc dependencies/token.c dependencies/List/list.c dependencies/Errors/Errors.c Basm/*.c -g -o basm
+gcc dependencies/Stack/stack.c dependencies/token.c Bam/*.c -g -o bam
+echo "done building"

@@ -11,6 +11,7 @@ typedef enum{
 //with parameter
     token_push,
     token_roll,
+    token_jsr,
     token_jmp,
     token_jeq,
     token_jne,
@@ -23,6 +24,8 @@ typedef enum{
 //without parameter
     token_pop,
     token_dup,
+    token_stop,
+    token_rts,
     token_print,
     token_swap,
     token_add,
@@ -50,4 +53,5 @@ typedef struct{
 token_t token_init(token_type type, char* str_val, uint64_t num_val);
 void token_free(token_t token);
 void token_printf(token_t token);
+char* get_token_name(token_type type);
 #endif

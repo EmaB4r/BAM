@@ -9,10 +9,16 @@ typedef struct {
     char* source_code;
     char current_char;
     int text_index;
+    int current_line;
 }lexer_t;
 
+//initializes a lexer object
 lexer_t lexer_init(char* source_code_path);
+
+//advances the lexer.text_index and updates lexer.current_char
 void lexer_advance(lexer_t * lexer);
+
+//the current token
 token_t lexer_get_next_token(lexer_t * lexer);
 
 

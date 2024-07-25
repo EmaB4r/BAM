@@ -1,4 +1,5 @@
 #include "instructions.h"
+#include <stdint.h>
 program_t get_program_from_path(char* path){
     FILE *f=fopen(path, "r");
     char * buffer = 0;
@@ -25,7 +26,8 @@ void execute_program(program_t program){
     uint64_t b;
     uint64_t result;
     stack_t help_stack;
-    unsigned int PC =0;
+    stack_t subroutine_stack=sstack_init(200);
+    int PC = 0;
     while(PC<program.size){
         curr_instr=program.instructions[PC];
         PC++;
@@ -52,15 +54,45 @@ void execute_program(program_t program){
                     break;
                     
                 case token_jmp: PC=operand; break;
+                case token_jeq: 
+                    a=STACK_POP(uint64_t);
+                    b=STACK_POP(uint64_t);
+                    PC= (a==b) ? operand : PC;
+                    break;
                 case token_jne:
                     a=STACK_POP(uint64_t);
                     b=STACK_POP(uint64_t);
                     PC= (a!=b) ? operand : PC;
                     break;
+                case token_jlt: 
+                    a=STACK_POP(uint64_t);
+                    b=STACK_POP(uint64_t);
+                    PC= (a<b) ? operand : PC;
+                    break;
+                case token_jle:
+                    a=STACK_POP(uint64_t);
+                    b=STACK_POP(uint64_t);
+                    PC= (a<=b) ? operand : PC;
+                    break;
+                case token_jgt: 
+                    a=STACK_POP(uint64_t);
+                    b=STACK_POP(uint64_t);
+                    PC= (a>b) ? operand : PC;
+                    break;
+                case token_jge:
+                    a=STACK_POP(uint64_t);
+                    b=STACK_POP(uint64_t);
+                    PC= (a>=b) ? operand : PC;
+                    break;
+                case token_jsr:
+                    SSTACK_PUSH(subroutine_stack, PC);
+                    PC=operand;
+                    break;
             }
         };
         if(instr_without_param(curr_instr)){
             switch (curr_instr) {
+                case token_stop: exit(0); break;
                 case token_pop: STACK_POP(uint64_t); break;
                 case token_dup: 
                     a=STACK_POP(uint64_t); 
@@ -100,7 +132,8 @@ void execute_program(program_t program){
                     STACK_PUSH(result);
                     break;
                 case token_print: printf("%lu\n", STACK_POP(uint64_t));
-                break;
+                    break;
+                case token_rts: PC=SSTACK_POP(subroutine_stack, int);
             }
         };
         

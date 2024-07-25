@@ -1,6 +1,7 @@
 #ifndef ERRORS_H
 #define ERRORS_H
 #include <stdio.h>
+#include <stdlib.h>
 
 #define ANSI_RESET "\033[0m"
 #define ANSI_BOLD "\033[1m"
@@ -30,10 +31,10 @@ typedef struct Result{
 
 Result_t Result_wrap(void* content, int type);
 
-#define panic(MSG) {\
-    printf(ANSI_RED ANSI_BOLD"Panicked in %s at line %d" ANSI_YELLOW "\nError msg: %s\n" ANSI_RESET,__FILE__,__LINE__, MSG); \
+#define panic(FORMAT, ...) do{\
+    printf(ANSI_RED ANSI_BOLD"Panicked in %s at line %d" ANSI_YELLOW "\nError msg: " FORMAT ANSI_RESET,__FILE__,__LINE__, ##__VA_ARGS__); \
     exit(1);\
-}
+}while(0)
 
 #define Result_unwrap_or_panic(RESULT, MSG)({\
     if (!result.fn_isOk(RESULT))\

@@ -48,6 +48,7 @@ lexer_t lexer_init(char* source_code_path){
     lexer_t lexer = {.source_code = get_file_text_from_path(source_code_path),
                      .text_index=0};
     lexer.current_char=lexer.source_code[lexer.text_index];
+    lexer.current_line=0;
     return lexer;
 }
 
@@ -56,8 +57,28 @@ void lexer_advance(lexer_t * lexer){
     lexer->current_char=lexer->source_code[lexer->text_index];
 }
 
+void lexer_skip_commen_line(lexer_t * lexer){
+    while(lexer->current_char!='\n'){
+        lexer_advance(lexer);
+    }
+    lexer->current_line++;
+}
+
+void lexer_skip_commen_block(lexer_t * lexer){
+    while(lexer->current_char!='\0'){
+        if(lexer->current_char=='*'){
+            lexer_advance(lexer);
+            if(lexer->current_char=='/' && lexer->current_char!='\0'){
+                return;
+            }
+            lexer_advance(lexer);
+        }
+    }
+}
+
 void lexer_skip_blanks(lexer_t * lexer){
     while(char_is_blank(lexer->current_char) && lexer->current_char!='\0'){
+        if (lexer->current_char=='\n') lexer->current_line++;
         lexer_advance(lexer);
     }
 }
@@ -67,19 +88,37 @@ void lexer_skip_blanks(lexer_t * lexer){
 token_t lexer_get_next_token(lexer_t * lexer){
     lexer_skip_blanks(lexer);
     char*instr_name;
+    
+    if(lexer->current_char=='/'){
+        lexer_advance(lexer);
+        if(lexer->current_char=='/') lexer_skip_commen_line(lexer);
+        else if (lexer->current_char =='*') lexer_skip_commen_block(lexer);
+        else {printf("comment wrongly written\n"); exit(1);} 
+        lexer_skip_blanks(lexer);
+    }
+    
     if(char_is_num(lexer->current_char)){
         return token_init(token_num, NULL, lexer_collect_num(lexer));
     }
+    
+    //switch checks for all possible instructions
     switch(lexer->current_char){
+        //'\0' used to stop the lexing process
         case '\0': return token_init(token_end, NULL, 0); break;
+        
+        //'@' used for lable definitions
         case '@': 
             lexer_advance(lexer); 
             return token_init(token_lable_def, lexer_collect_str(lexer), 0); 
         break;
+        
+        //'.' used for precompiler instructions
         case '.':
             lexer_advance(lexer); 
             return token_init(token_precompiler, lexer_collect_str(lexer), 0); 
         break;
+        
+        //checks for all possible instructions and if not present returns a lable
         default: 
             instr_name = lexer_collect_str(lexer);
             if(!strcmp(instr_name, "push")) return token_init(token_push, instr_name, 0);
@@ -99,6 +138,9 @@ token_t lexer_get_next_token(lexer_t * lexer){
             if(!strcmp(instr_name, "jgt")) return token_init(token_jgt, instr_name, 0);
             if(!strcmp(instr_name, "jle")) return token_init(token_jle, instr_name, 0);
             if(!strcmp(instr_name, "jge")) return token_init(token_jge, instr_name, 0);
+            if(!strcmp(instr_name, "jsr")) return token_init(token_jsr, instr_name, 0);
+            if(!strcmp(instr_name, "rts")) return token_init(token_rts, instr_name, 0);
+            if(!strcmp(instr_name, "stop")) return token_init(token_stop, instr_name, 0);
             else return token_init(token_lable, instr_name, 0);
         break;
     }

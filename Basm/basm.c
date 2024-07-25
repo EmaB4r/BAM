@@ -34,14 +34,14 @@ void write_instructions(list_t list, FILE *fout){
 
 int main(int argc, char*argv[]){
     if(argc<2){
-        printf("use basm <source_code.basm>\n");
+        printf("usage:\nbasm <source_code.basm> [optional out-name]\n");
         exit(0);
     }
     
     parser_t parser=parser_init(argv[1]);
     parser_parse(&parser);
-    print_all_lables();
-    argv[1][strlen(argv[1])-5]='\0';
-    write_instructions(parser.instructions_list, fopen(argv[1], "wb"));
+    
+    char* outfile_name=(argc<3) ? "b.out" : argv[2]; 
+    write_instructions(parser.instructions_list, fopen(outfile_name, "wb"));
     return 0;
 }

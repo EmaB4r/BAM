@@ -53,6 +53,23 @@ void list_ins_tail(list_t list, void* Item){
     list->num_elem+=1;
 }
 
+void list_concat_tail(list_t dest, list_t src){
+    if(src->head==NULL && src->tail==NULL){
+        free(src);
+        return;
+    }
+    if(dest->head==NULL && dest->tail==NULL){
+        *dest=*src;
+        free(src);
+        return;
+    }
+    dest->tail->next=src->head;
+    src->head->prev=dest->tail;
+    dest->tail=src->tail;
+    free(src);
+    
+}
+
 
 int list_get_num_elem(list_t list){
     return list->num_elem;

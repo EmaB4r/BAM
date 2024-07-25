@@ -34,6 +34,9 @@ void list_ins_head(list_t list, void* Item);
 //inserts a given item pointer in tail's place
 void list_ins_tail(list_t list, void* Item);
 
+//concatenates list src as dest tail, frees src but not dest
+void list_concat_tail(list_t dest, list_t src);
+
 //returns list's number of nodes
 int list_get_num_elem(list_t list);
 
