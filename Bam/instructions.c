@@ -133,6 +133,7 @@ void execute_program(program_t program){
                     break;
                 case token_print: printf("%lu\n", STACK_POP(uint64_t));
                     break;
+                case token_print_stack: stack_print("%lu\n"); break;
                 case token_rts: PC=SSTACK_POP(subroutine_stack, int);
             }
         };

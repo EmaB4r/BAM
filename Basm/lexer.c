@@ -131,6 +131,7 @@ token_t lexer_get_next_token(lexer_t * lexer){
             if(!strcmp(instr_name, "swap")) return token_init(token_swap, instr_name, 0);
             if(!strcmp(instr_name, "roll")) return token_init(token_roll, instr_name, 0);
             if(!strcmp(instr_name, "print")) return token_init(token_print, instr_name, 0);
+            if(!strcmp(instr_name, "print_stack")) return token_init(token_print_stack, instr_name, 0);
             if(!strcmp(instr_name, "jmp")) return token_init(token_jmp, instr_name, 0);
             if(!strcmp(instr_name, "jeq")) return token_init(token_jeq, instr_name, 0);
             if(!strcmp(instr_name, "jne")) return token_init(token_jne, instr_name, 0);

@@ -30,6 +30,8 @@ void stack_push(void * item, size_t item_size);
 // #CAST NEEDED# like type var = *(type*)stack_pop(); 
 void* stack_pop();
 
+//prints the whole GLOBAL stack.
+//needs a format to print the value, like "%c\n" or "%d\n"
 void stack_print(char* str);
 
 //frees GLOBAL stack obj
