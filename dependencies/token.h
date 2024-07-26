@@ -27,6 +27,7 @@ typedef enum{
     token_stop,
     token_rts,
     token_print,
+    token_print_stack,
     token_swap,
     token_add,
     token_sub,
