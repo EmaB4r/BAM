@@ -32,6 +32,7 @@ dup : duplicates the top element
 stop : ends program execution
 rts : sets PC to the return address at the end of a subroutine
 print : pops the top element of the stack and prints it out
+print_stack : instruction useful for debug; prints the whole stack to terminal without modifying it
 swap : swaps the 2 top elements
 add : pops 2 elements from the stack and pushes their sum
 sub : pops 2 elements from the stack and pushes their subtraction
