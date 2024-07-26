@@ -27,16 +27,16 @@ token_jge : pops 2 values from the stack and sets PC to the given address, if th
 
 ### Instructions without a parameter
 ```
- pop : pops the top element of the stack
- dup : duplicates the top element
- stop : ends program execution
- rts : sets PC to the return address at the end of a subroutine
- print : pops the top element of the stack and prints it out
- swap : swaps the 2 top elements
- add : pops 2 elements from the stack and pushes their sum
- sub : pops 2 elements from the stack and pushes their subtraction
- mul : pops 2 elements from the stack and pushes their product
- div : pops 2 elements from the stack and pushes their division (top: a/b; bottom: a%b)
+pop : pops the top element of the stack
+dup : duplicates the top element
+stop : ends program execution
+rts : sets PC to the return address at the end of a subroutine
+print : pops the top element of the stack and prints it out
+swap : swaps the 2 top elements
+add : pops 2 elements from the stack and pushes their sum
+sub : pops 2 elements from the stack and pushes their subtraction
+mul : pops 2 elements from the stack and pushes their product
+div : pops 2 elements from the stack and pushes their division (top: a/b; bottom: a%b)
 ```
 
 ### Metainstructions
