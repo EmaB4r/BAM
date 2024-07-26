@@ -46,3 +46,8 @@ div : pops 2 elements from the stack and pushes their division (top: a/b; bottom
 .include filename.basm : includes a basm file starting from that line 
 //COMMENT LINE
 ```
+
+### Future adds:
+  support for macro definition 
+  block comments using `/* comment */`
+  some sort of syscalls for inputting and outputting text or numbers
