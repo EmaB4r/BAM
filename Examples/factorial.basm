@@ -1,0 +1,45 @@
+@main
+push 7 //N! to calculate
+jsr calculate_factorial
+print
+stop
+
+
+//takes the number on top of the stack and calculates its factorial, putting it on the top
+@calculate_factorial
+    //check if the number is 0, if yes pushes 1 and returns
+    dup
+    push 0
+    jeq num_is_z
+    
+    dup // copy N to have on the top an iterator (from N to 1) and under it the current result
+@_calc_fac
+    //decrease the iterator
+    push 1
+    swap
+    sub
+    
+    //save it for later
+    dup
+    roll 3
+    
+    //calculate the next current result 
+    mul
+    
+    //swap to have again on the top the iterator and under it the current result
+    swap
+    
+    //check if iterator == 1
+    dup
+    push 1
+    jne _calc_fac
+    
+    pop //remove the iterator
+    jmp _end_factorial
+    
+    
+@num_is_z
+    pop
+    push 1
+@_end_factorial
+rts
