@@ -1,5 +1,13 @@
 @main
-push 7 //N! to calculate
+
+//N = num to calculate factorial
+.var N 5
+push N
+jsr calculate_factorial
+print
+
+.var M 3
+push M
 jsr calculate_factorial
 print
 stop

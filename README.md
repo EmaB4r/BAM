@@ -40,10 +40,19 @@ mul : pops 2 elements from the stack and pushes their product
 div : pops 2 elements from the stack and pushes their division (top: a/b; bottom: a%b)
 ```
 
-### Metainstructions
+### Lables
 ```
-@lable_name : defines a lable
-.include filename.basm : includes a basm file starting from that line 
+@lable_name : defines a lable  
+```
+
+### Directives
+```
+.include filename.basm : includes a basm file starting from that line  
+.var varname num : defines a precompiler variable as `varname` and assigns to it `num`
+```
+
+### Comments
+```
 //COMMENT LINE  
 /*  
   Comment Block  
@@ -52,5 +61,4 @@ div : pops 2 elements from the stack and pushes their division (top: a/b; bottom
 
 ### Future adds:
 support for macro definition  
-support for global/precompiler variables  
 some sort of syscalls to input and output text or numbers  

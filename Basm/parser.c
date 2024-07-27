@@ -84,6 +84,16 @@ void parser_parse_precompiler(parser_t * parser){
         parser_eat_noninstr(parser);
         list_concat_tail(parser->instructions_list, includeparser.instructions_list);
     }
+    if(!strcmp(parser->current_token->str_val, "var")){
+        char* lablename;
+        char* lableval;
+        parser_eat_noninstr(parser);
+        parser_expect(parser, token_lable);
+        parser_eat_noninstr(parser);
+        parser_expect(parser, token_num);
+        save_lable(parser->previous_token->str_val, parser->current_token->num_val);
+        parser_eat_noninstr(parser);
+    }
     else {panic("precompiler directive %s on line %d does not exist", 
         parser->current_token->str_val, parser->lexer.current_line);}
 }
