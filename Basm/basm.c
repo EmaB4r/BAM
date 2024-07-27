@@ -43,5 +43,6 @@ int main(int argc, char*argv[]){
     
     char* outfile_name=(argc<3) ? "b.out" : argv[2]; 
     write_instructions(parser.instructions_list, fopen(outfile_name, "wb"));
+    parser_free(&parser);
     return 0;
 }

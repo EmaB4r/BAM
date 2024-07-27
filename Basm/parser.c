@@ -130,4 +130,5 @@ void parser_parse(parser_t* parser){
 
 void parser_free(parser_t* parser){
     list_free(parser->instructions_list, token_free);
+    free(parser->lexer.source_code);
 }

@@ -49,5 +49,6 @@ div : pops 2 elements from the stack and pushes their division (top: a/b; bottom
 
 ### Future adds:
 support for macro definition  
+support for global/precompiler variables
 block comments using `/* comment */`  
 some sort of syscalls for inputting and outputting text or numbers  

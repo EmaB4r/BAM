@@ -7,9 +7,10 @@
 
 typedef struct {
     char* source_code;
-    char current_char;
+    char* filename;
     int text_index;
     int current_line;
+    char current_char;
 }lexer_t;
 
 //initializes a lexer object
