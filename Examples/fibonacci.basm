@@ -1,5 +1,9 @@
 //FIBONACCI
 
+/*
+TEST FIBASM
+*/
+
     push 0 //iterator
     push 0 //first number
     jsr printTop

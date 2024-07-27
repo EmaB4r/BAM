@@ -49,7 +49,7 @@ lexer_t lexer_init(char* source_code_path){
                      .text_index=0};
     lexer.current_char=lexer.source_code[lexer.text_index];
     lexer.current_line=0;
-    lexer.source_code=source_code_path;
+    lexer.filename=source_code_path;
     return lexer;
 }
 
@@ -74,6 +74,7 @@ void lexer_skip_comment_block(lexer_t * lexer){
                 return;
             }
         }
+        else lexer_advance(lexer);
     }
 }
 
@@ -91,11 +92,11 @@ token_t lexer_get_next_token(lexer_t * lexer){
     char*instr_name;
     
     //block used to determine if there is a comment and if it's either a `//comment` or `/* comment */`
-    if(lexer->current_char=='/'){
+    while (lexer->current_char=='/'){
         lexer_advance(lexer);
         if(lexer->current_char=='/') lexer_skip_commen_line(lexer);
         else if (lexer->current_char =='*') lexer_skip_comment_block(lexer);
-        else {panic("comment wrongly written");} 
+        else {panic("comment at line %d wrongly written\n", lexer->current_line);} 
         lexer_skip_blanks(lexer);
     }
     

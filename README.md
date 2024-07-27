@@ -44,11 +44,13 @@ div : pops 2 elements from the stack and pushes their division (top: a/b; bottom
 ```
 @lable_name : defines a lable
 .include filename.basm : includes a basm file starting from that line 
-//COMMENT LINE
+//COMMENT LINE  
+/*  
+  Comment Block  
+*/  
 ```
 
 ### Future adds:
 support for macro definition  
-support for global/precompiler variables
-block comments using `/* comment */`  
-some sort of syscalls for inputting and outputting text or numbers  
+support for global/precompiler variables  
+some sort of syscalls to input and output text or numbers  
