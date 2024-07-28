@@ -39,20 +39,13 @@ char *token_types[]={
 };
 
 token_t token_init(token_type type, char *str_val, uint64_t num_val){
-    token_t t = malloc(sizeof(*t));
-    t->type=type;
-    t->num_val=num_val;
-    t->str_val=str_val;
+    token_t t = {.type=type,.str_val=str_val, .num_val=num_val};
     return t;
 }
 
-void token_free(token_t token){
+void token_free(token_t * token){
     if(token->str_val!=NULL) free(token->str_val);
     free(token);
-}
-
-void token_printf(token_t token){
-    printf("%s %lu  %s\n", token->str_val, token->num_val, token_types[token->type]);
 }
 
 char* get_token_name(token_type type){

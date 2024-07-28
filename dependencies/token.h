@@ -49,10 +49,10 @@ typedef struct{
     token_type type;
     char* str_val;
     uint64_t num_val;
-}*token_t;
+}token_t;
 
 token_t token_init(token_type type, char* str_val, uint64_t num_val);
-void token_free(token_t token);
+void token_free(token_t * token);
 void token_printf(token_t token);
 char* get_token_name(token_type type);
 #endif

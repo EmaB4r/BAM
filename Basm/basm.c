@@ -4,17 +4,17 @@
 
 
 
-void write_instructions(list_t list, FILE *fout){
-    node_t head = list_get_head(list);
+void write_instructions(list_t * list, FILE *fout){
+    node_t * head = list->head;
     int val;
     
     while(head!=NULL){
-        token_t curr_tok = (token_t)head->Item;
+        token_t *curr_tok = (token_t*)head->item;
         
         if(curr_tok->type>=token_push && curr_tok->type<=token_jge){
             fwrite(&curr_tok->type, 1, 1, fout);
             head=head->next;
-            token_t curr_tok = (token_t)head->Item;
+            curr_tok = (token_t*)head->item;
             if(curr_tok->type==token_lable){
                 curr_tok->num_val=get_lable_val(curr_tok->str_val);
             }

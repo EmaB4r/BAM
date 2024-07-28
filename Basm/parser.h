@@ -12,7 +12,7 @@ typedef struct {
     lexer_t lexer;
     token_t current_token;
     token_t previous_token;
-    list_t instructions_list;
+    list_t * instructions_list;
     int curr_instr_addr;
 }parser_t;
 
