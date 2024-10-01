@@ -4,41 +4,64 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// Define the list of tokens with X() wrapping each token
+#define OPS_LIST \
+    X(token_end) \
+    /* Instructions with parameter */ \
+    X(token_push) \
+    X(token_roll) \
+    X(token_dup) \
+    X(token_jsr) \
+    X(token_andi) \
+    X(token_ori) \
+    X(token_noti) \
+    X(token_shli) \
+    X(token_shri) \
+    X(token_addi) \
+    X(token_subi) \
+    X(token_muli) \
+    X(token_divi) \
+    X(token_jmp) \
+    X(token_jeq) \
+    X(token_jne) \
+    X(token_jlt) \
+    X(token_jgt) \
+    X(token_jle) \
+    X(token_jge) \
+    /* Instructions without parameter */ \
+    X(token_pop) \
+    X(token_lb) \
+    X(token_sb) \
+    X(token_stop) \
+    X(token_rts) \
+    X(token_swap) \
+    X(token_syscall) \
+    X(token_print_stack) \
+    X(token_and) \
+    X(token_or) \
+    X(token_not) \
+    X(token_shl) \
+    X(token_shr) \
+    X(token_add) \
+    X(token_sub) \
+    X(token_mul) \
+    X(token_div) \
+    /* Metainstructions */ \
+    X(token_lable_def) \
+    X(token_lable) \
+    X(token_precompiler_include) \
+    X(token_precompiler_def) \
+    X(token_precompiler_asciiz) \
+    X(token_precompiler_byte) \
+    X(token_str) \
+    X(token_num)
+
+
+
 typedef enum{
-    token_end,
-
-//instructions
-//with parameter
-    token_push,
-    token_roll,
-    token_jsr,
-    token_jmp,
-    token_jeq,
-    token_jne,
-    token_jlt,
-    token_jgt,
-    token_jle,
-    token_jge,
-
-//instructions
-//without parameter
-    token_pop,
-    token_dup,
-    token_stop,
-    token_rts,
-    token_print,
-    token_print_stack,
-    token_swap,
-    token_add,
-    token_sub,
-    token_mul,
-    token_div,
-
-    //metainstructions
-    token_lable_def,
-    token_lable,
-    token_precompiler,
-    token_num
+    #define X(op) op,
+    OPS_LIST
+    #undef X
 }token_type;
 
 int instr_with_param(token_type type);
@@ -51,6 +74,7 @@ typedef struct{
     uint64_t num_val;
 }token_t;
 
+void print_type(token_type type);
 token_t token_init(token_type type, char* str_val, uint64_t num_val);
 void token_free(token_t * token);
 void token_printf(token_t token);

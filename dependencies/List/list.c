@@ -46,6 +46,22 @@ void list_ins_head(list_t * list, void* item, size_t item_size){
     list->n_elements++;
 }
 
+void list_append(list_t*dest, list_t*src){
+    node_t * head=src->head;
+    while (head!=NULL){
+        list_ins_tail(dest, head->item, head->item_size);
+        head=head->next;
+    }
+}
+
+void list_print(list_t*list, void(*printfun)(void*item)){
+    node_t * head=list->head;
+    while(head!=NULL){
+        printfun(head->item);
+        head=head->next;
+    }
+}
+
 void list_free_R(node_t * head){
     if (head == NULL) return;
     list_free_R(head->next);

@@ -1,0 +1,3 @@
+[submodule "dependencies/Stack"]
+	path = dependencies/Stack
+	url = https://github.com/EmaB4r/Stack

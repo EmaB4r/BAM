@@ -23,6 +23,10 @@ void list_ins_tail(list_t * list, void* item, size_t item_size);
 
 void list_ins_head(list_t * list, void* item, size_t item_size);
 
+void list_append(list_t*dest, list_t*src);
+
+void list_print(list_t*list, void(*printfun)(void*item));
+
 node_t * node_init(void * item, size_t item_size);
 
 #define LIST_INS_TAIL(LIST, ITEM) list_ins_tail(LIST, &ITEM, sizeof(ITEM))

@@ -1,4 +1,5 @@
 #include "parser.h"
+#include <stdint.h>
 #include <stdio.h>
 
 
@@ -19,11 +20,21 @@ void write_instructions(list_t * list, FILE *fout){
                 curr_tok->num_val=get_lable_val(curr_tok->str_val);
             }
             fwrite(&curr_tok->num_val, sizeof(uint64_t), 1, fout);
-        }
-           
-        if(curr_tok->type>=token_pop && curr_tok->type<=token_div)
+        }  
+        else if(curr_tok->type>=token_pop && curr_tok->type<=token_div)
             fwrite(&curr_tok->type, 1, 1, fout);
-            
+        else if(curr_tok->type==token_str){
+            fwrite(curr_tok->str_val, 1, strlen(curr_tok->str_val), fout);
+        }
+        else if(curr_tok->type==token_precompiler_byte){
+            head=head->next;
+            curr_tok=head->item;
+            uint64_t z = 0x0;
+            if(curr_tok->type==token_lable){
+                curr_tok->num_val=get_lable_val(curr_tok->str_val);
+            }
+            for(int i=0; i<curr_tok->num_val; i++) fwrite(&z, sizeof(uint64_t), 1, fout);
+        }
         
         head=head->next;
     }

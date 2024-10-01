@@ -1,42 +1,16 @@
 #include "token.h"
 
 
+
 char *token_types[]={
-    "token_end",
-
-//instructions
-//with parameter
-    "token_push",
-    "token_roll",
-    "token_jsr",
-    "token_jmp",
-    "token_jeq",
-    "token_jne",
-    "token_jlt",
-    "token_jgt",
-    "token_jle",
-    "token_jge",
-
-//instructions
-//without parameter
-    "token_pop",
-    "token_dup",
-    "token_stop",
-    "token_rts",
-    "token_print",
-    "token_print_stack",
-    "token_swap",
-    "token_add",
-    "token_sub",
-    "token_mul",
-    "token_div",
-
-    //metainstructions
-    "token_lable_def",
-    "token_lable",
-    "token_precompiler",
-    "token_num",
+    #define X(op) #op,
+    OPS_LIST
+    #undef X
 };
+
+void print_type(token_type type){
+    fputs(token_types[type], stdout);
+}
 
 token_t token_init(token_type type, char *str_val, uint64_t num_val){
     token_t t = {.type=type,.str_val=str_val, .num_val=num_val};

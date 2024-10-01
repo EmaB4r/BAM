@@ -2,10 +2,11 @@
 #define INSTRUCTIONS_H
 
 #include "../dependencies/Stack/stack.h"
+#include "../dependencies/token.h"
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../dependencies/token.h"
 
 
 typedef struct {char* instructions; int size;}program_t;

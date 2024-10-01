@@ -1,0 +1,128 @@
+.def BYTESZ 8
+.def CELLS 6
+.def ITERS 8
+.def RULE 110
+.def BITMASK 255
+@main
+    jsr init_line
+    jsr print_line
+    push 0
+    @sim_loop
+        push 2
+        @sim_line
+            
+            push RULE
+            swap
+            push ' '
+            jeq check1
+            shri 4
+            @check1
+            
+            swap
+            push ' '
+            jeq check2
+            shri 2
+            @check2
+            
+            swap
+            push ' '
+            jeq check3
+            shri 1
+            @check3
+            
+            andi 1
+            dup 1
+            push 2
+            syscall
+            push ' '
+            push 0
+            syscall
+            push 10
+            mul
+            push ' '
+            add
+            
+            swap
+            push 1
+            swap 
+            sub
+            jsr line_index_set
+            push 1
+            add 
+            dup 1
+            push CELLS
+        jgt sim_line
+        jsr print_line
+        pop
+        push 1
+        add 
+        dup 1
+        push ITERS
+    jgt sim_loop
+    pop
+    stop
+
+
+@init_line
+    push 0
+    @init_line_loop
+        dup 1
+        push ' '
+        swap
+        jsr line_index_set
+        push 1
+        add
+        dup 1
+        push CELLS
+    jgt init_line_loop
+    pop
+    push '*'
+    push 1
+    push CELLS
+    sub
+    jsr line_index_set
+rts
+
+
+@print_line
+    push 0
+    @_print_line_loop
+        dup 1
+        jsr line_index_get
+        push 0
+        syscall
+        push 1
+        add
+        dup 1
+        push CELLS
+    jgt _print_line_loop
+    pop*/
+    push '\n'
+    push 0
+    syscall
+rts
+
+// expects, from top to bottom, the array index and array address
+// returns the byte red
+@r_array
+    push BYTESZ
+    mul
+    add
+    lb
+rts
+
+//expects, from top to bottom, the array index, the array address and the value to write
+@w_array
+    push BYTESZ
+    mul
+    add
+    sb
+rts
+
+@old_line
+.byte CELLS
+
+.byte 5
+
+@new_line
+.byte CELLS

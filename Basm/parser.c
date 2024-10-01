@@ -1,35 +1,7 @@
 #include "parser.h"
-
-
-// LABLE'S HANDLING WILL BE MOVED TO A SEPARATE FILE
-typedef struct {char* lable_name; int addr; }lable_address;
-
-lable_address lable_addresses[100];
-int used_address_spaces=0;
-
-void save_lable(char* name, int addr){
-    lable_addresses[used_address_spaces].lable_name=name;
-    lable_addresses[used_address_spaces].addr=addr;
-    used_address_spaces++;
-}
-
-int get_lable_val(char* name){
-    for(int i=0; i<used_address_spaces; i++){
-        if(!strcmp(lable_addresses[i].lable_name, name))
-            return lable_addresses[i].addr;
-    }
-    printf("lable %s undeclared", name);
-    panic("lable not declared");
-}
-
-void print_all_lables(){
-    for(int i=0; i<used_address_spaces; i++){
-        printf("%s addr %d\n", lable_addresses[i].lable_name, lable_addresses[i].addr);
-    }
-}
-//************************************
-
+#include "lable.h"
 int starting_point_defined=0;
+
 
 
 parser_t parser_init(char*source_code_path){
@@ -69,33 +41,65 @@ int parser_expect(parser_t* parser, token_type expected_token){
     return (parser->current_token.type==expected_token);
 }
 
+
+void precompiler_include(parser_t * parser){
+    parser_eat_noninstr(parser);
+    parser_t includeparser=parser_init(parser->current_token.str_val);
+    includeparser.curr_instr_addr=parser->curr_instr_addr;
+    parser_parse(&includeparser);
+    parser_eat_noninstr(parser);
+    list_append(parser->instructions_list, includeparser.instructions_list);
+    parser->curr_instr_addr=includeparser.curr_instr_addr;
+    parser_free(&includeparser);
+}
+
+
+void precompiler_def(parser_t * parser){
+    char* lablename;
+    char* lableval;
+    parser_eat_noninstr(parser);
+    parser_expect(parser, token_lable);
+    parser_eat_noninstr(parser);
+    parser_expect(parser, token_num);
+    if(!save_lable(parser->previous_token.str_val, parser->current_token.num_val)){
+        panic("redefinition of global '%s' at line %d of %s\n",
+            parser->previous_token.str_val, 
+            parser->lexer.current_line,
+            parser->lexer.filename);
+    }
+    parser_eat_noninstr(parser);
+}
+
+void precompiler_asciiz(parser_t *parser){
+    parser_eat_noninstr(parser);
+    LIST_INS_TAIL(parser->instructions_list, parser->current_token);
+    parser->curr_instr_addr+=strlen(parser->current_token.str_val);
+    parser_eat_noninstr(parser);
+}
+
+void precompiler_byte(parser_t* parser){
+    LIST_INS_TAIL(parser->instructions_list, parser->current_token);
+    parser_eat_noninstr(parser);
+    LIST_INS_TAIL(parser->instructions_list, parser->current_token);
+    parser_eat_noninstr(parser);
+    if(parser->previous_token.type==token_num) parser->curr_instr_addr += parser->previous_token.num_val;
+    else parser->curr_instr_addr+=get_lable_val(parser->previous_token.str_val)*sizeof(uint64_t);
+}
+
 //saves a lable address inside the lables table
 void parser_parse_labledef(parser_t* parser){
-    save_lable(parser->current_token.str_val, parser->curr_instr_addr);
+    if(!save_lable(parser->current_token.str_val, parser->curr_instr_addr)){
+        panic("redefinition of lable '%s' at line %d of %s\n", 
+            parser->current_token.str_val, 
+            parser->lexer.current_line,
+            parser->lexer.filename);
+    }
     parser_eat(parser);
     parser->curr_instr_addr--;
 }
 
-void parser_parse_precompiler(parser_t * parser){
-    if(!strcmp(parser->current_token.str_val, "include")){
-        parser_eat_noninstr(parser);
-        parser_t includeparser=parser_init(parser->current_token.str_val);
-        parser_parse(&includeparser);
-        parser_eat_noninstr(parser);
-        //list_concat_tail(parser->instructions_list, includeparser.instructions_list);
-    }
-    if(!strcmp(parser->current_token.str_val, "var")){
-        char* lablename;
-        char* lableval;
-        parser_eat_noninstr(parser);
-        parser_expect(parser, token_lable);
-        parser_eat_noninstr(parser);
-        parser_expect(parser, token_num);
-        save_lable(parser->previous_token.str_val, parser->current_token.num_val);
-        parser_eat_noninstr(parser);
-    }
-    else {panic("precompiler directive %s on line %d does not exist", 
-        parser->current_token.str_val, parser->lexer.current_line);}
+void print_tok(token_t *tok){
+    printf("%s %s %lu\n", get_token_name(tok->type), tok->str_val, tok->num_val);
 }
 
 //parses an instruction that expects a parameter, for example <push 10>
@@ -129,7 +133,10 @@ void parser_parse(parser_t* parser){
         //switch checks if the token is a meta-instruction
         switch(parser->current_token.type){
             case token_lable_def: parser_parse_labledef(parser); break;
-            case token_precompiler: parser_parse_precompiler(parser); break;
+            case token_precompiler_def: precompiler_def(parser); break;
+            case token_precompiler_include: precompiler_include(parser); break;
+            case token_precompiler_asciiz: precompiler_asciiz(parser); break;
+            case token_precompiler_byte: precompiler_byte(parser); break;
         }
         if(instr_with_param(parser->current_token.type))
             parser_parse_instr_with_param(parser);

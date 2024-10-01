@@ -1,12 +1,12 @@
 @main
 
 //N = num to calculate factorial
-.var N 5
+.def N 5
 push N
 jsr calculate_factorial
 print
 
-.var M 3
+.def M 3
 push M
 jsr calculate_factorial
 print
@@ -16,11 +16,11 @@ stop
 //takes the number on top of the stack and calculates its factorial, putting it on the top
 @calculate_factorial
     //check if the number is 0, if yes pushes 1 and returns
-    dup
+    dup 1
     push 0
     jeq num_is_z
     
-    dup // copy N to have on the top an iterator (from N to 1) and under it the current result
+    dup 1 // copy N to have on the top an iterator (from N to 1) and under it the current result
 @_calc_fac
     //decrease the iterator
     push 1
@@ -28,7 +28,7 @@ stop
     sub
     
     //save it for later
-    dup
+    dup 1
     roll 3
     
     //calculate the next current result 
@@ -38,7 +38,7 @@ stop
     swap
     
     //check if iterator == 1
-    dup
+    dup 1
     push 1
     jne _calc_fac
     

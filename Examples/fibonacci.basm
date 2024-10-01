@@ -1,9 +1,5 @@
 //FIBONACCI
-
-/*
-TEST FIBASM
-*/
-
+    .def N 15
     push 0 //iterator
     push 0 //first number
     jsr printTop
@@ -12,7 +8,7 @@ TEST FIBASM
     
 @calc
 //i start by saving the biggest value for the next iteration 
-    dup
+    dup 1
     roll 3
 //sum the 2 current numbers
     add
@@ -24,13 +20,13 @@ TEST FIBASM
     push 1
     add
 
-    dup
+    dup 1
     roll 4 //moves the duped iterator to the bottom
-    push 15 //number of iterations until stop
+    push N //number of iterations until stop
     jne calc
     stop
     
 @printTop
-    dup
+    dup 1
     print
     rts
