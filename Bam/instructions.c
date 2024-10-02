@@ -88,7 +88,7 @@ void execute_program(program_t program){
                 break;
                 case token_subi: 
                     a=*(uint64_t*)stack_pop(&program_stack);
-                    a+=operand;
+                    a-=operand;
                     stack_push(&program_stack, &a);
                 break;
                 case token_muli: assert(0 && "muli not implemented yet"); break;

@@ -78,6 +78,9 @@ rts
         addi 1
         dup 2
     jlt _p_array_loop
+    push '\n'
+    push 0
+    syscall
     pop
     pop
     pop
