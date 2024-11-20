@@ -4,17 +4,31 @@
 .def N 5
 push N
 jsr calculate_factorial
-
+jsr printuln
 
 .def M 3
 push M
 jsr calculate_factorial
+jsr printuln
 
 stop
 
 
 //takes the number on top of the stack and calculates its factorial, putting it on the top
 @calculate_factorial
+    jsr printu
+    push '!'
+    jsr printc
+    pop
+    push ' '
+    jsr printc
+    pop
+    push '='
+    jsr printc
+    pop
+    push ' '
+    jsr printc
+    pop
     //check if the number is 0, if yes pushes 1 and returns
     dup 1
     push 0
@@ -49,3 +63,5 @@ stop
     push 1
 @_end_factorial
 rts
+
+.include "Examples/std/io.basm"
