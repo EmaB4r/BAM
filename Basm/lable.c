@@ -28,7 +28,7 @@ int get_lable_val(char* name){
         if(!strcmp(lable_addresses[i].lable_name, name))
             return lable_addresses[i].addr;
     }
-    printf("lable %s undeclared", name);
+    printf("lable %s undeclared\n", name);
     panic("lable not declared");
 }
 

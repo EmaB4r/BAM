@@ -2,9 +2,9 @@
     .def N 15
     push 0 //iterator
     push 0 //first number
-    jsr printTop
+    jsr printuln
     push 1 //second number
-    jsr printTop
+    jsr printuln
     
 @calc
 //i start by saving the biggest value for the next iteration 
@@ -12,7 +12,7 @@
     roll 3
 //sum the 2 current numbers
     add
-    jsr printTop
+    jsr printuln
     
 //move the iterator to the top and increment it 
     roll 3
@@ -26,7 +26,4 @@
     jne calc
     stop
     
-@printTop
-    dup 1
-    print
-    rts
+.include "Examples/std/io.basm"

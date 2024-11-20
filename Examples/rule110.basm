@@ -113,8 +113,5 @@ rts
 
 .include Examples/std/array.basm
 
-@sym // in position 0 i keep a ' ', in 1 an '*'
-.byte 2
-
 @line
 .byte CELLS

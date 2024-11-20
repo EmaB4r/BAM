@@ -4,12 +4,12 @@
 .def N 5
 push N
 jsr calculate_factorial
-print
+
 
 .def M 3
 push M
 jsr calculate_factorial
-print
+
 stop
 
 
@@ -23,9 +23,7 @@ stop
     dup 1 // copy N to have on the top an iterator (from N to 1) and under it the current result
 @_calc_fac
     //decrease the iterator
-    push 1
-    swap
-    sub
+    subi 1
     
     //save it for later
     dup 1
