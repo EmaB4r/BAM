@@ -111,7 +111,7 @@ stop
     pop
 rts
 
-.include Examples/std/array.basm
+.include Examples/std/array.asm
 
 @line
 .byte CELLS

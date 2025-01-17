@@ -64,4 +64,4 @@ stop
 @_end_factorial
 rts
 
-.include "Examples/std/io.basm"
+.include "Examples/std/io.asm"

@@ -1,4 +1,5 @@
+.gitignore
 bam
 basm
 *.out
-Examples/test.basm
+Examples/test.asm

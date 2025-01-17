@@ -26,4 +26,4 @@
     jne calc
     stop
     
-.include "Examples/std/io.basm"
+.include "Examples/std/io.asm"
