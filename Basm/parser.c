@@ -1,8 +1,39 @@
 #include "parser.h"
 #include "lable.h"
+
+typedef struct macro_s{
+    char* name;
+    list_t* instructions;
+} macro_t;
+
+macro_t macros[200];
+size_t n_macro=0;
+void parser_eat_noninstr(parser_t* parser);
+void save_macro(parser_t * parser){
+    printf("Parser before macro read:{\n\
+        curr_instr_addr = %d\
+        }\n", parser->curr_instr_addr);
+    
+    macro_t * current_macro = &(macros[n_macro]);
+    current_macro->name=parser->current_token.str_val;
+    printf("%s\n", current_macro->name);
+    parser_eat_noninstr(parser);
+    current_macro->instructions=list_init();
+    parser_t macro_parser=*parser;
+    macro_parser.instructions_list=list_init();
+    parser_parse(&macro_parser);
+    list_print(macro_parser.instructions_list, token_printf);
+    printf("Parser after macro read:{\n\
+        curr_instr_addr = %d\
+        }\n", parser->curr_instr_addr);
+    exit(0);
+}
+
+
+
+// PARSER
+
 int starting_point_defined=0;
-
-
 
 parser_t parser_init(char*source_code_path){
     //parser contains a lexer, the current and prev token and a list of parsed instructions
@@ -55,8 +86,6 @@ void precompiler_include(parser_t * parser){
 
 
 void precompiler_def(parser_t * parser){
-    char* lablename;
-    char* lableval;
     parser_eat_noninstr(parser);
     parser_expect(parser, token_lable);
     parser_eat_noninstr(parser);
@@ -68,6 +97,12 @@ void precompiler_def(parser_t * parser){
             parser->lexer.filename);
     }
     parser_eat_noninstr(parser);
+}
+
+void precompiler_macro(parser_t * parser){
+    parser_eat_noninstr(parser);
+    parser_expect(parser, token_lable);
+    save_macro(parser);
 }
 
 void precompiler_asciiz(parser_t *parser){
@@ -132,11 +167,14 @@ void parser_parse(parser_t* parser){
     while(parser->current_token.type!=token_end){
         //switch checks if the token is a meta-instruction
         switch(parser->current_token.type){
+            case token_lable: LIST_INS_TAIL(parser->instructions_list, parser->current_token); break;
             case token_lable_def: parser_parse_labledef(parser); break;
             case token_precompiler_def: precompiler_def(parser); break;
             case token_precompiler_include: precompiler_include(parser); break;
             case token_precompiler_asciiz: precompiler_asciiz(parser); break;
             case token_precompiler_byte: precompiler_byte(parser); break;
+            case token_precompiler_macro_def : precompiler_macro(parser); break;
+            case token_precompiler_end_macro_def: return; break;
         }
         if(instr_with_param(parser->current_token.type))
             parser_parse_instr_with_param(parser);

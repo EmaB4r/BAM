@@ -1,3 +1,4 @@
+#include "lexer.h"
 #include "parser.h"
 #include <stdint.h>
 #include <stdio.h>
@@ -48,7 +49,7 @@ int main(int argc, char*argv[]){
         printf("usage:\nbasm <source_code.basm> [optional out-name]\n");
         exit(0);
     }
-    
+    lexer_t lexer=lexer_init(argv[1]);
     parser_t parser=parser_init(argv[1]);
     parser_parse(&parser);
     

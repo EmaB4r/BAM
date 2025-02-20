@@ -1,7 +1,4 @@
 #include "lable.h"
-#include <stdio.h>
-#include <string.h>
-#include "../dependencies/Errors/Errors.h"
 
 lable_address lable_addresses[200];
 int used_address_spaces=0;

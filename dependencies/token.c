@@ -33,3 +33,7 @@ int instr_without_param(token_type type){
     return type >= token_pop && type <= token_div;
 }
 
+void token_printf(void *token){
+    printf("%s str: %s num %lu\n", token_types[((token_t*)token)->type], ((token_t*)token)->str_val, ((token_t*)token)->num_val);
+}
+

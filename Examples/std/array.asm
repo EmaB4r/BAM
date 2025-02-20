@@ -1,7 +1,13 @@
 .def BYTESZ 8
 
+// TODO: make the calling convention more consistent like:
+// stack top [optional value, index, array address] stack bottom
+// or for c_array like
+// stack top [arr_size, arr1 addr, arr2 addr] stack bottom
+
+
 // read array
-// given an index and an array puts on the stack array[index]
+// given an index and an array addr, puts on the stack array[index]
 // expects, from top to bottom, the array index and array address
 @r_array
     push BYTESZ
@@ -11,7 +17,7 @@
 rts
 
 //write array
-//given an index, an array and the value to store does array[index] = value
+//given an index, an array addr and the value to store, does array[index] = value
 //expects, from top to bottom, the array index, the array address and the value to write
 @w_array
     push BYTESZ

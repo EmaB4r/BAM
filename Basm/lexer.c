@@ -75,13 +75,21 @@ char * get_file_text_from_path(char* path){
     return buffer;
 }
 
-
+token_t lexer_tokenize(lexer_t * lexer);
 lexer_t lexer_init(char* source_code_path){
     lexer_t lexer = {.source_code = get_file_text_from_path(source_code_path),
-                     .text_index=0};
-    lexer.current_char=lexer.source_code[lexer.text_index];
-    lexer.current_line=0;
-    lexer.filename=source_code_path;
+                     .text_index=0,
+                     .current_char=lexer.source_code[lexer.text_index],
+                     .current_line=0,
+                     .filename=source_code_path,
+                     .lexemes=list_init(),
+                     .current_node=NULL,
+    };
+    token_t token;
+    do{
+        token=lexer_tokenize(&lexer);
+        LIST_INS_TAIL(lexer.lexemes, token);
+    }while(token.type!=token_end);
     return lexer;
 }
 
@@ -119,7 +127,7 @@ void lexer_skip_blanks(lexer_t * lexer){
 
 
 
-token_t lexer_get_next_token(lexer_t * lexer){
+token_t lexer_tokenize(lexer_t * lexer){
     lexer_skip_blanks(lexer);
     char*instr_name;
     
@@ -155,6 +163,8 @@ token_t lexer_get_next_token(lexer_t * lexer){
             lexer_advance(lexer);
             instr_name = lexer_collect_str(lexer);
             if(!strcmp(instr_name, "def")) return token_init(token_precompiler_def, instr_name, 0);
+            if(!strcmp(instr_name, "macro")) return token_init(token_precompiler_macro_def, instr_name, 0);
+            if(!strcmp(instr_name, "endmacro")) return token_init(token_precompiler_end_macro_def, instr_name, 0);
             if(!strcmp(instr_name, "include")) return token_init(token_precompiler_include, instr_name, 0);
             if(!strcmp(instr_name, "asciiz")) return token_init(token_precompiler_asciiz, instr_name, 0);
             if(!strcmp(instr_name, "byte")) return token_init(token_precompiler_byte, instr_name, 0);
@@ -217,3 +227,9 @@ token_t lexer_get_next_token(lexer_t * lexer){
     }
 }
 
+token_t lexer_get_next_token(lexer_t * lexer){
+    if(lexer->current_node==NULL) lexer->current_node=lexer->lexemes->head;
+    else if (((token_t *)(lexer->current_node->item))->type!=token_end) 
+        lexer->current_node = lexer->current_node->next;
+    return *((token_t *)(lexer->current_node->item));
+};

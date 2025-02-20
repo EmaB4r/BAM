@@ -51,6 +51,8 @@
     X(token_lable) \
     X(token_precompiler_include) \
     X(token_precompiler_def) \
+    X(token_precompiler_macro_def) \
+    X(token_precompiler_end_macro_def) \
     X(token_precompiler_asciiz) \
     X(token_precompiler_byte) \
     X(token_str) \
@@ -77,6 +79,6 @@ typedef struct{
 void print_type(token_type type);
 token_t token_init(token_type type, char* str_val, uint64_t num_val);
 void token_free(token_t * token);
-void token_printf(token_t token);
+void token_printf(void * token);
 char* get_token_name(token_type type);
 #endif

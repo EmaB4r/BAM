@@ -1,3 +1,6 @@
+
+// TODO: implement also some 'get' routine to help get more bytes
+// like a get(N) for getting N elements in a row, beeing chars or numers
 @printc
     dup 1
     push 0

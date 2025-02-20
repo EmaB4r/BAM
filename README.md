@@ -82,13 +82,10 @@ Then simply create a new `.basm` file, compile it by doing `./Basm new.basm` and
 ### Syscalls
 syscalls expect a syscall code on top of the stack and are defined by that.
   - **0 (print char)** : pops a value from the stack and prints it as a char
+  - TODO: 1 (print string): pops a value from the stack (string address) and uses it to print an asciiz string
   - **2 (print uint)** : pops a value from the stack and prints it as an unsigned int
-  - TODO:{
-	  1 (print string): pops a value from the stack (string address) and uses it to print an asciiz string
-	  3 (print int): pops a value from the stack and prints it as an int
-	  4 (read char): ...
-	}
-
+	- TODO: 3 (print int): pops a value from the stack and prints it as an int
+	- TODO: 4 (read char): ...
 ### Lables
 ```
 @lable_name : defines a lable  
@@ -99,7 +96,7 @@ syscalls expect a syscall code on top of the stack and are defined by that.
 - **.asciiz** : embeds into the program a null terminated ascii string `HELLO` -> `HELLO0`
 - **.include path/to/file.basm** : embeds a basm file into the program starting from that line  
 - **.def varname num** : defines a precompiler variable as `varname` and assigns to it `num`
-
+- ** TODO: .macro name{ body }** : defines a code macro that replaces every `name`
 
 ### Comments
 ```
@@ -114,7 +111,7 @@ syscalls expect a syscall code on top of the stack and are defined by that.
 */  
 ```
 
-## TODO:
-implement precompiler .ifdef and .endif like headerguards
-support for macro definition
-refactor all instructions that work on more than 1 value on the stack to expect polish notation
+## MISSING
+TODO: implement precompiler .ifdef and .endif like headerguards
+TODO: support for macro definition
+TODO: refactor all instructions that work on more than 1 value on the stack to expect polish notation

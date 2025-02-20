@@ -1,14 +1,16 @@
 #ifndef PARSER_H
 #define PARSER_H
-#include "lexer.h"
-#include "../dependencies/token.h"
+
 #include <stdint.h>
+#include <string.h>
+#include "lexer.h"
+#include "lable.h"
+#include "../dependencies/token.h"
 #include "../dependencies/List/list.h"
 #include "../dependencies/Errors/Errors.h"
-#include <string.h>
 
 
-typedef struct {
+typedef struct parser_s{
     lexer_t lexer;
     token_t current_token;
     token_t previous_token;
