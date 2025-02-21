@@ -12,8 +12,8 @@ void print_type(token_type type){
     fputs(token_types[type], stdout);
 }
 
-token_t token_init(token_type type, char *str_val, uint64_t num_val){
-    token_t t = {.type=type,.str_val=str_val, .num_val=num_val};
+token_t token_init(token_type type, char *str_val, uint64_t num_val, int line){
+    token_t t = {.type=type,.str_val=str_val, .num_val=num_val, .line=line};
     return t;
 }
 

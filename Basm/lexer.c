@@ -142,7 +142,7 @@ token_t lexer_tokenize(lexer_t * lexer){
     
     //check if the current char is a number
     if(char_is_num(lexer->current_char)){
-        token_t tok = token_init(token_num, lexer_collect_str(lexer), 0);
+        token_t tok = token_init(token_num, lexer_collect_str(lexer), 0, lexer->current_line);
         tok.num_val=lexer_strtouint64(tok.str_val);
         return tok;
     }
@@ -150,79 +150,79 @@ token_t lexer_tokenize(lexer_t * lexer){
     //switch checks for all possible instructions
     switch(lexer->current_char){
         //'\0' used to stop the lexing process
-        case '\0': return token_init(token_end, NULL, 0); break;
+        case '\0': return token_init(token_end, NULL, 0, lexer->current_line); break;
         
         //'@' used for lable definitions
         case '@': 
             lexer_advance(lexer); 
-            return token_init(token_lable_def, lexer_collect_str(lexer), 0); 
+            return token_init(token_lable_def, lexer_collect_str(lexer), 0, lexer->current_line); 
         break;
         
         //'.' used for precompiler instructions
         case '.':
             lexer_advance(lexer);
             instr_name = lexer_collect_str(lexer);
-            if(!strcmp(instr_name, "def")) return token_init(token_precompiler_def, instr_name, 0);
-            if(!strcmp(instr_name, "macro")) return token_init(token_precompiler_macro_def, instr_name, 0);
-            if(!strcmp(instr_name, "endmacro")) return token_init(token_precompiler_end_macro_def, instr_name, 0);
-            if(!strcmp(instr_name, "include")) return token_init(token_precompiler_include, instr_name, 0);
-            if(!strcmp(instr_name, "asciiz")) return token_init(token_precompiler_asciiz, instr_name, 0);
-            if(!strcmp(instr_name, "byte")) return token_init(token_precompiler_byte, instr_name, 0);
+            if(!strcmp(instr_name, "def")) return token_init(token_precompiler_def, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "macro")) return token_init(token_precompiler_macro_def, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "endmacro")) return token_init(token_precompiler_end_macro_def, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "include")) return token_init(token_precompiler_include, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "asciiz")) return token_init(token_precompiler_asciiz, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "byte")) return token_init(token_precompiler_byte, instr_name, 0, lexer->current_line);
         break;
         
         case '\'':
             lexer_advance(lexer);
-            return token_init(token_num, NULL, lexer_collect_char(lexer));
+            return token_init(token_num, NULL, lexer_collect_char(lexer), lexer->current_line);
         break;
         
         case '\"':
             lexer_advance(lexer);
-            return token_init(token_str, lexer_collect_strstr(lexer), 0);
+            return token_init(token_str, lexer_collect_strstr(lexer), 0, lexer->current_line);
         break;
         
         //checks for all possible instructions and if not present returns a lable
         default: 
             //in future will probably become a binary search tree if the number of instruction continues to increase
             instr_name = lexer_collect_str(lexer);
-            if(!strcmp(instr_name, "push")) return token_init(token_push, instr_name, 0);
-            if(!strcmp(instr_name, "pop")) return token_init(token_pop, instr_name, 0);
-            if(!strcmp(instr_name, "add")) return token_init(token_add, instr_name, 0);
-            if(!strcmp(instr_name, "sub")) return token_init(token_sub, instr_name, 0);
-            if(!strcmp(instr_name, "mul")) return token_init(token_mul, instr_name, 0);
-            if(!strcmp(instr_name, "div")) return token_init(token_div, instr_name, 0);
-            if(!strcmp(instr_name, "addi")) return token_init(token_addi, instr_name, 0);
-            if(!strcmp(instr_name, "subi")) return token_init(token_subi, instr_name, 0);
-            if(!strcmp(instr_name, "muli")) return token_init(token_muli, instr_name, 0);
-            if(!strcmp(instr_name, "divi")) return token_init(token_divi, instr_name, 0);
-            if(!strcmp(instr_name, "dup")) return token_init(token_dup, instr_name, 0);
-            if(!strcmp(instr_name, "swap")) return token_init(token_swap, instr_name, 0);
-            if(!strcmp(instr_name, "roll")) return token_init(token_roll, instr_name, 0);
-            if(!strcmp(instr_name, "syscall")) return token_init(token_syscall, instr_name, 0);
-            if(!strcmp(instr_name, "print_stack")) return token_init(token_print_stack, instr_name, 0);
-            if(!strcmp(instr_name, "jmp")) return token_init(token_jmp, instr_name, 0);
-            if(!strcmp(instr_name, "jeq")) return token_init(token_jeq, instr_name, 0);
-            if(!strcmp(instr_name, "jne")) return token_init(token_jne, instr_name, 0);
-            if(!strcmp(instr_name, "jlt")) return token_init(token_jlt, instr_name, 0);
-            if(!strcmp(instr_name, "jgt")) return token_init(token_jgt, instr_name, 0);
-            if(!strcmp(instr_name, "jle")) return token_init(token_jle, instr_name, 0);
-            if(!strcmp(instr_name, "jge")) return token_init(token_jge, instr_name, 0);
-            if(!strcmp(instr_name, "jsr")) return token_init(token_jsr, instr_name, 0);
-            if(!strcmp(instr_name, "rts")) return token_init(token_rts, instr_name, 0);
-            if(!strcmp(instr_name, "stop")) return token_init(token_stop, instr_name, 0);
-            if(!strcmp(instr_name, "and")) return token_init(token_and, instr_name, 0);
-            if(!strcmp(instr_name, "or")) return token_init(token_or, instr_name, 0);
-            if(!strcmp(instr_name, "not")) return token_init(token_not, instr_name, 0);
-            if(!strcmp(instr_name, "andi")) return token_init(token_andi, instr_name, 0);
-            if(!strcmp(instr_name, "ori")) return token_init(token_ori, instr_name, 0);
-            if(!strcmp(instr_name, "noti")) return token_init(token_noti, instr_name, 0);
-            if(!strcmp(instr_name, "shl")) return token_init(token_shl, instr_name, 0);
-            if(!strcmp(instr_name, "shr")) return token_init(token_shr, instr_name, 0);
-            if(!strcmp(instr_name, "shli")) return token_init(token_shli, instr_name, 0);
-            if(!strcmp(instr_name, "shri")) return token_init(token_shri, instr_name, 0);
-            if(!strcmp(instr_name, "lb")) return token_init(token_lb, instr_name, 0);
-            if(!strcmp(instr_name, "sb")) return token_init(token_sb, instr_name, 0);
+            if(!strcmp(instr_name, "push")) return token_init(token_push, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "pop")) return token_init(token_pop, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "add")) return token_init(token_add, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "sub")) return token_init(token_sub, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "mul")) return token_init(token_mul, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "div")) return token_init(token_div, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "addi")) return token_init(token_addi, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "subi")) return token_init(token_subi, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "muli")) return token_init(token_muli, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "divi")) return token_init(token_divi, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "dup")) return token_init(token_dup, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "swap")) return token_init(token_swap, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "roll")) return token_init(token_roll, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "syscall")) return token_init(token_syscall, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "print_stack")) return token_init(token_print_stack, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "jmp")) return token_init(token_jmp, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "jeq")) return token_init(token_jeq, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "jne")) return token_init(token_jne, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "jlt")) return token_init(token_jlt, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "jgt")) return token_init(token_jgt, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "jle")) return token_init(token_jle, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "jge")) return token_init(token_jge, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "jsr")) return token_init(token_jsr, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "rts")) return token_init(token_rts, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "stop")) return token_init(token_stop, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "and")) return token_init(token_and, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "or")) return token_init(token_or, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "not")) return token_init(token_not, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "andi")) return token_init(token_andi, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "ori")) return token_init(token_ori, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "noti")) return token_init(token_noti, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "shl")) return token_init(token_shl, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "shr")) return token_init(token_shr, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "shli")) return token_init(token_shli, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "shri")) return token_init(token_shri, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "lb")) return token_init(token_lb, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "sb")) return token_init(token_sb, instr_name, 0, lexer->current_line);
             
-            else return token_init(token_lable, instr_name, 0);
+            else return token_init(token_lable, instr_name, 0, lexer->current_line);
         break;
     }
 }

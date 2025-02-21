@@ -1,36 +1,6 @@
 #include "parser.h"
 #include "lable.h"
 
-typedef struct macro_s{
-    char* name;
-    list_t* instructions;
-} macro_t;
-
-macro_t macros[200];
-size_t n_macro=0;
-void parser_eat_noninstr(parser_t* parser);
-void save_macro(parser_t * parser){
-    printf("Parser before macro read:{\n\
-        curr_instr_addr = %d\
-        }\n", parser->curr_instr_addr);
-    
-    macro_t * current_macro = &(macros[n_macro]);
-    current_macro->name=parser->current_token.str_val;
-    printf("%s\n", current_macro->name);
-    parser_eat_noninstr(parser);
-    current_macro->instructions=list_init();
-    parser_t macro_parser=*parser;
-    macro_parser.instructions_list=list_init();
-    parser_parse(&macro_parser);
-    list_print(macro_parser.instructions_list, token_printf);
-    printf("Parser after macro read:{\n\
-        curr_instr_addr = %d\
-        }\n", parser->curr_instr_addr);
-    exit(0);
-}
-
-
-
 // PARSER
 
 int starting_point_defined=0;
@@ -61,7 +31,7 @@ void parser_digest(parser_t* parser, token_type expected_token){
     if(parser->current_token.type!=expected_token) {
         panic("\nunexpected token type after token %s on line %d\ngot %s expected %s\n",
             parser->previous_token.str_val,
-            parser->lexer.current_line,
+            parser->current_token.line,
             get_token_name(parser->current_token.type),
             get_token_name(expected_token));
     }
@@ -93,7 +63,7 @@ void precompiler_def(parser_t * parser){
     if(!save_lable(parser->previous_token.str_val, parser->current_token.num_val)){
         panic("redefinition of global '%s' at line %d of %s\n",
             parser->previous_token.str_val, 
-            parser->lexer.current_line,
+            parser->current_token.line,
             parser->lexer.filename);
     }
     parser_eat_noninstr(parser);
@@ -126,7 +96,7 @@ void parser_parse_labledef(parser_t* parser){
     if(!save_lable(parser->current_token.str_val, parser->curr_instr_addr)){
         panic("redefinition of lable '%s' at line %d of %s\n", 
             parser->current_token.str_val, 
-            parser->lexer.current_line,
+            parser->current_token.line,
             parser->lexer.filename);
     }
     parser_eat(parser);
@@ -150,7 +120,7 @@ void parser_parse_instr_with_param(parser_t* parser){
     else{
         panic("\nunexpected token type after token %s on line %d\ngot %s, expected address or lable\n",
             parser->previous_token.str_val,
-            parser->lexer.current_line,
+            parser->current_token.line,
             get_token_name(parser->current_token.type));
     }
     
@@ -161,13 +131,17 @@ void parser_parse_instr_without_param(parser_t*parser){
     LIST_INS_TAIL(parser->instructions_list, parser->current_token);
     parser_eat(parser);
 }
+void parser_parse_lable(parser_t*parser){
+    LIST_INS_TAIL(parser->instructions_list, parser->current_token);
+    parser_eat_noninstr(parser);
+}
 
 
 void parser_parse(parser_t* parser){
     while(parser->current_token.type!=token_end){
         //switch checks if the token is a meta-instruction
         switch(parser->current_token.type){
-            case token_lable: LIST_INS_TAIL(parser->instructions_list, parser->current_token); break;
+            case token_lable: parser_parse_lable(parser); break;
             case token_lable_def: parser_parse_labledef(parser); break;
             case token_precompiler_def: precompiler_def(parser); break;
             case token_precompiler_include: precompiler_include(parser); break;

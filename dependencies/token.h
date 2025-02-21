@@ -74,10 +74,11 @@ typedef struct{
     token_type type;
     char* str_val;
     uint64_t num_val;
+    int line;
 }token_t;
 
 void print_type(token_type type);
-token_t token_init(token_type type, char* str_val, uint64_t num_val);
+token_t token_init(token_type type, char* str_val, uint64_t num_val, int line);
 void token_free(token_t * token);
 void token_printf(void * token);
 char* get_token_name(token_type type);

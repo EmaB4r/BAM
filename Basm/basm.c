@@ -49,10 +49,9 @@ int main(int argc, char*argv[]){
         printf("usage:\nbasm <source_code.basm> [optional out-name]\n");
         exit(0);
     }
-    lexer_t lexer=lexer_init(argv[1]);
     parser_t parser=parser_init(argv[1]);
     parser_parse(&parser);
-    
+    list_print(parser.instructions_list, token_printf);
     char* outfile_name=(argc<3) ? "b.out" : argv[2]; 
     write_instructions(parser.instructions_list, fopen(outfile_name, "wb"));
     parser_free(&parser);
