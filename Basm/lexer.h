@@ -19,6 +19,8 @@ typedef struct {
 //initializes a lexer object
 lexer_t lexer_init(char* source_code_path);
 
+void lexer_reset(lexer_t * lexer);
+
 //advances the lexer.text_index and updates lexer.current_char
 void lexer_advance(lexer_t * lexer);
 

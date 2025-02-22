@@ -75,6 +75,7 @@ typedef struct{
     char* str_val;
     uint64_t num_val;
     int line;
+    char* file;
 }token_t;
 
 void print_type(token_type type);

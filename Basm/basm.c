@@ -1,5 +1,6 @@
 #include "lexer.h"
 #include "parser.h"
+#include "preprocessor.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -46,12 +47,11 @@ void write_instructions(list_t * list, FILE *fout){
 
 int main(int argc, char*argv[]){
     if(argc<2){
-        printf("usage:\nbasm <source_code.basm> [optional out-name]\n");
+        printf("usage:\nbasm <source_code.asm> [optional out-name]\n");
         exit(0);
     }
-    parser_t parser=parser_init(argv[1]);
+    parser_t parser=parser_init(process(argv[1]));
     parser_parse(&parser);
-    list_print(parser.instructions_list, token_printf);
     char* outfile_name=(argc<3) ? "b.out" : argv[2]; 
     write_instructions(parser.instructions_list, fopen(outfile_name, "wb"));
     parser_free(&parser);

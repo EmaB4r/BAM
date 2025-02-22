@@ -6,7 +6,7 @@
 // stack top [arr_size, arr1 addr, arr2 addr] stack bottom
 
 
-// read array
+/// read array
 // given an index and an array addr, puts on the stack array[index]
 // expects, from top to bottom, the array index and array address
 @r_array

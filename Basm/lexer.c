@@ -125,6 +125,9 @@ void lexer_skip_blanks(lexer_t * lexer){
     }
 }
 
+void lexer_reset(lexer_t * lexer){
+    lexer->current_node=NULL;
+}
 
 
 token_t lexer_tokenize(lexer_t * lexer){

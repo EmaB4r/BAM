@@ -19,7 +19,7 @@ typedef struct parser_s{
 }parser_t;
 
 //initializes a parser object
-parser_t parser_init(char*source_code_path);
+parser_t parser_init(lexer_t lexer);
 
 //function that parses a program 
 void parser_parse(parser_t* parser);

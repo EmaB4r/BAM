@@ -32,7 +32,7 @@ typedef struct Result{
 Result_t Result_wrap(void* content, int type);
 
 #define panic(FORMAT, ...) do{\
-    printf(ANSI_RED ANSI_BOLD"Panicked in %s at line %d" ANSI_YELLOW "\nError msg: " FORMAT ANSI_RESET,__FILE__,__LINE__, ##__VA_ARGS__); \
+    printf(ANSI_RED ANSI_BOLD"%s:%d: PANIC!" ANSI_YELLOW "\nError msg: " FORMAT ANSI_RESET,__FILE__,__LINE__, ##__VA_ARGS__); \
     exit(1);\
 }while(0)
 

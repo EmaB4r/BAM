@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+
 typedef struct node_s{
     struct node_s *prev;
     struct node_s *next;
@@ -22,6 +23,8 @@ list_t * list_init();
 void list_ins_tail(list_t * list, void* item, size_t item_size);
 
 void list_ins_head(list_t * list, void* item, size_t item_size);
+
+void list_append_head(list_t*dest, list_t*src);
 
 void list_append(list_t*dest, list_t*src);
 

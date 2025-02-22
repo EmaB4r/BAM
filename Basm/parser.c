@@ -1,14 +1,20 @@
 #include "parser.h"
 #include "lable.h"
+#include "lexer.h"
 
 // PARSER
 
+// TODO: after the code refactor the lexer is a list of tokens
+// the parser prints out parsing errors from lexer->filename
+// but the preprocessor returns a single big lexer with a stream of all the tokens of the codebase
+// change the error messages to print instead of lexer->filename current_token->filename
+
 int starting_point_defined=0;
 
-parser_t parser_init(char*source_code_path){
+parser_t parser_init(lexer_t lexer){
     //parser contains a lexer, the current and prev token and a list of parsed instructions
     parser_t parser={
-        .lexer=lexer_init(source_code_path),
+        .lexer=lexer,
         .current_token=lexer_get_next_token(&parser.lexer),
         .instructions_list=list_init(),
     };
@@ -45,7 +51,7 @@ int parser_expect(parser_t* parser, token_type expected_token){
 
 void precompiler_include(parser_t * parser){
     parser_eat_noninstr(parser);
-    parser_t includeparser=parser_init(parser->current_token.str_val);
+    parser_t includeparser=parser_init(lexer_init(parser->current_token.str_val));
     includeparser.curr_instr_addr=parser->curr_instr_addr;
     parser_parse(&includeparser);
     parser_eat_noninstr(parser);
@@ -67,12 +73,6 @@ void precompiler_def(parser_t * parser){
             parser->lexer.filename);
     }
     parser_eat_noninstr(parser);
-}
-
-void precompiler_macro(parser_t * parser){
-    parser_eat_noninstr(parser);
-    parser_expect(parser, token_lable);
-    save_macro(parser);
 }
 
 void precompiler_asciiz(parser_t *parser){
@@ -147,8 +147,8 @@ void parser_parse(parser_t* parser){
             case token_precompiler_include: precompiler_include(parser); break;
             case token_precompiler_asciiz: precompiler_asciiz(parser); break;
             case token_precompiler_byte: precompiler_byte(parser); break;
-            case token_precompiler_macro_def : precompiler_macro(parser); break;
-            case token_precompiler_end_macro_def: return; break;
+            //case token_precompiler_macro_def : precompiler_macro(parser); break;
+            //case token_precompiler_end_macro_def: return; break;
         }
         if(instr_with_param(parser->current_token.type))
             parser_parse_instr_with_param(parser);
