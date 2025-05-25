@@ -1,3 +1,6 @@
+.include "Examples/std/syscalls.asm"
+.ifndef ARRAY_ASM
+.def ARRAY_ASM 1
 .def BYTESZ 8
 
 // TODO: make the calling convention more consistent like:
@@ -80,7 +83,6 @@ rts
         pop
         jsr r_array
         jsr _ar_printt_elem
-    
         addi 1
         dup 2
     jlt _p_array_loop
@@ -95,9 +97,10 @@ rts
 
 //expects the number to print
 @_ar_printt_elem
-    push 2
-    syscall
+    syscall2
     push ' '
     push 0
     syscall
 rts
+
+.endif

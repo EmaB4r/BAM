@@ -60,7 +60,7 @@ void precompiler_include(parser_t * parser){
     parser_free(&includeparser);
 }
 
-
+/*
 void precompiler_def(parser_t * parser){
     parser_eat_noninstr(parser);
     parser_expect(parser, token_lable);
@@ -74,6 +74,7 @@ void precompiler_def(parser_t * parser){
     }
     parser_eat_noninstr(parser);
 }
+*/
 
 void precompiler_asciiz(parser_t *parser){
     parser_eat_noninstr(parser);
@@ -143,8 +144,8 @@ void parser_parse(parser_t* parser){
         switch(parser->current_token.type){
             case token_lable: parser_parse_lable(parser); break;
             case token_lable_def: parser_parse_labledef(parser); break;
-            case token_precompiler_def: precompiler_def(parser); break;
-            case token_precompiler_include: precompiler_include(parser); break;
+            //case token_precompiler_def: precompiler_def(parser); break;
+            //case token_precompiler_include: precompiler_include(parser); break;
             case token_precompiler_asciiz: precompiler_asciiz(parser); break;
             case token_precompiler_byte: precompiler_byte(parser); break;
             //case token_precompiler_macro_def : precompiler_macro(parser); break;

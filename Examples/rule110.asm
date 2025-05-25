@@ -1,4 +1,6 @@
-.def CELLS 100
+.include "Examples/std/array.asm"
+.include "Examples/std/syscalls.asm"
+.def CELLS 50
 .def RULE 110
 @main
     // array initialization as 0
@@ -90,28 +92,24 @@ stop
         push 0
         jeq _trueif_conversion
         //_falseif_conversion    
-            push '*'
+            push '#'
             mul
             jmp _endif_conversion 
         @_trueif_conversion
             addi ' ' // 0 + ' '
         @_endif_conversion
         
-        push 0
-        syscall
+        syscall0
     
         addi 1
         dup 2
     jlt _pc_array_loop
     push '\n'
-    push 0
-    syscall
+    syscall0
     pop
     pop
     pop
 rts
-
-.include Examples/std/array.asm
 
 @line
 .byte CELLS

@@ -3,6 +3,7 @@
 #include "../dependencies/List/list.h"
 #include "lexer.h"
 #include "parser.h"
+#include "lable.h"
 
 typedef struct macro_s{
     char* name;
@@ -10,7 +11,7 @@ typedef struct macro_s{
     list_t * parameters;
 }macro_t;
 
-lexer_t process(char*filename);
+lexer_t process(char*filename, int add_terminator);
 
 
 #endif

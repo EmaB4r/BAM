@@ -62,12 +62,39 @@ void list_append(list_t*dest, list_t*src){
     }
 }
 
+void list_append_after_node(node_t*dest, list_t*src){
+    node_t * termination = dest->next;
+    node_t * source_node = src->head;
+    while(source_node != NULL){
+        dest->next = node_init(source_node->item, source_node->item_size);
+        dest = dest->next;
+        source_node = source_node->next;
+    }
+    dest->next=termination;
+}
+
 void list_print(list_t*list, void(*printfun)(void*item)){
     node_t * head=list->head;
     while(head!=NULL){
         printfun(head->item);
         head=head->next;
     }
+}
+
+void list_remove_node(list_t* list, node_t* node){
+    if(node == list->head){
+        list->head = list->head->next;
+    }
+    else if (node == list->tail){
+        list->tail = list->tail->prev;
+    }
+    else{
+        node_t * next = node->next;
+        next->prev = node->prev;
+        node->prev->next = next;
+    }
+    free(node->item);
+    free(node);
 }
 
 void list_free_R(node_t * head){

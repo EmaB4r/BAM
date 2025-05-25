@@ -166,12 +166,19 @@ token_t lexer_tokenize(lexer_t * lexer){
             lexer_advance(lexer);
             instr_name = lexer_collect_str(lexer);
             if(!strcmp(instr_name, "def")) return token_init(token_precompiler_def, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "ifndef")) return token_init(token_precompiler_ifndef, instr_name, 0, lexer->current_line);
+            if(!strcmp(instr_name, "endif")) return token_init(token_precompiler_endif, instr_name, 0, lexer->current_line);
             if(!strcmp(instr_name, "macro")) return token_init(token_precompiler_macro_def, instr_name, 0, lexer->current_line);
             if(!strcmp(instr_name, "endmacro")) return token_init(token_precompiler_end_macro_def, instr_name, 0, lexer->current_line);
             if(!strcmp(instr_name, "include")) return token_init(token_precompiler_include, instr_name, 0, lexer->current_line);
             if(!strcmp(instr_name, "asciiz")) return token_init(token_precompiler_asciiz, instr_name, 0, lexer->current_line);
             if(!strcmp(instr_name, "byte")) return token_init(token_precompiler_byte, instr_name, 0, lexer->current_line);
-        break;
+        
+            panic("%s:%d unknown precompiler directive .%s\n", 
+                lexer->filename, lexer->current_line+1,
+                instr_name
+            );
+            break;
         
         case '\'':
             lexer_advance(lexer);

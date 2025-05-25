@@ -2,3 +2,4 @@ bam
 basm
 *.out
 Examples/test.asm
+output.txt

@@ -1,6 +1,6 @@
 #include "preprocessor.h"
+#include "lable.h"
 #include "lexer.h"
-#include "parser.h"
 
 
 macro_t macros[200];
@@ -16,8 +16,11 @@ int macro_is_present(char* name){
 }
 
 void precompiler_macro(lexer_t * lexer){
+    token_t current_token = lexer_get_next_token(lexer);
+    if(macro_is_present(current_token.str_val) != -1){
+        panic("Redefinition of macro %s\n", current_token.str_val);
+    }
     macro_t * current_macro=&(macros[n_macros++]);
-    token_t current_token = lexer_get_next_token(lexer); 
     //goes to the next token after .macro, expects a lable representing the macro name
     if(current_token.type!=token_lable){
         printf("%s:%d: Expected a macro name, got instead %s\n", 
@@ -27,6 +30,7 @@ void precompiler_macro(lexer_t * lexer){
     
     //copy the string reference, since no frees happen
     current_macro->name = current_token.str_val;
+    
     
     current_token = lexer_get_next_token(lexer);
     current_macro->body = list_init();
@@ -53,27 +57,35 @@ void precompiler_macro(lexer_t * lexer){
     current_macro->body->tail=tail;
 }
 
-// TODO: pendind_lexer->current_token is a lable representing a macro name
-// to that token should be appended the macro body
-// like current_macro->body->tail->next=pending_lexer->current_node->next;
-// like pending_lexer->current_node->next=current_macro->body->head
-// basically doing
-// macro_name -> something
-// macro_name -> macro_instr1 -> macro_instr2 -> ... -> something
-// 
-// DANGER!!
-// This works only when you have macros that do not call other macros
-// because if you do macro1 {macro2 macro2} this would expand macro2 into the actual macro1 body, doing a mess
-// should instead of changing pointers create a copy of the body and actually insert it into the pending lexer
-void expand_macro(int macro_index, lexer_t * pending_lexer){
-    node_t *node_before_macro=pending_lexer->current_node;
-    node_t *node_after_macro=node_before_macro->next;
-    macro_t * current_macro=&(macros[macro_index]);
-    node_before_macro->next=current_macro->body->head;
-    current_macro->body->tail->next=node_after_macro;
+void precompiler_def(lexer_t * lexer){
+    token_t def_name = lexer_get_next_token(lexer);
+    token_t def_val = lexer_get_next_token(lexer);
+    if(!save_lable(def_name.str_val, def_val.num_val)){
+        panic("redefinition of global '%s' at line %d of %s\n",
+            def_name.str_val, 
+            def_name.line,
+            lexer->filename);
+    }
 }
 
-lexer_t process(char*filename){
+void precompiler_ifndef(lexer_t * processed, lexer_t * pending){
+    token_t current_token = lexer_get_next_token(pending);
+    if(lable_is_present(current_token.str_val)){
+        while(lexer_get_next_token(pending).type != token_precompiler_endif);
+    }
+}
+
+void precompiler_inlcude(lexer_t * processed, lexer_t * pending){
+    lexer_t include_lexer = process(lexer_get_next_token(pending).str_val, 0);
+    list_append(processed->lexemes, include_lexer.lexemes);
+}
+
+void expand_macro(int macro_index, lexer_t * pending_lexer){
+    macro_t * current_macro=&(macros[macro_index]);
+    list_append_after_node(pending_lexer->current_node, current_macro->body);
+}
+
+lexer_t process(char*filename, int add_terminator){
     lexer_t pending_lexer=lexer_init(filename);
     lexer_t processed_lexer=pending_lexer;
     processed_lexer.lexemes=list_init();
@@ -81,6 +93,10 @@ lexer_t process(char*filename){
     while(current_token.type!=token_end){
         switch(current_token.type){
             case token_precompiler_macro_def : precompiler_macro(&pending_lexer); break;
+            case token_precompiler_ifndef: precompiler_ifndef(&processed_lexer, &pending_lexer);
+            case token_precompiler_endif: break;
+            case token_precompiler_include: precompiler_inlcude(&processed_lexer, &pending_lexer); break;
+            case token_precompiler_def: precompiler_def(&pending_lexer); break;
             case token_lable: {
                 int macro_index = macro_is_present(current_token.str_val);
                 if(macro_index!=-1){expand_macro(macro_index, &pending_lexer); break; }
@@ -90,8 +106,10 @@ lexer_t process(char*filename){
         current_token=lexer_get_next_token(&pending_lexer);
     }
     //list_free(lexer.lexemes);
-    token_t token=token_init(token_end, NULL, 0, 0);
-    LIST_INS_TAIL(processed_lexer.lexemes, token);
+    if(add_terminator){
+        token_t token=token_init(token_end, NULL, 0, 0);
+        LIST_INS_TAIL(processed_lexer.lexemes, token);
+    }
     lexer_reset(&processed_lexer);
     return processed_lexer;
 }

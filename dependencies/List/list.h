@@ -28,6 +28,8 @@ void list_append_head(list_t*dest, list_t*src);
 
 void list_append(list_t*dest, list_t*src);
 
+void list_append_after_node(node_t*dest, list_t*src);
+
 void list_print(list_t*list, void(*printfun)(void*item));
 
 node_t * node_init(void * item, size_t item_size);

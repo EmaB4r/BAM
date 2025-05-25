@@ -77,26 +77,36 @@ Then simply create a new `.basm` file, compile it by doing `./Basm new.basm` and
 - **mul** : pops 2 elements from the stack and pushes their product
 - **div** : pops 2 elements from the stack and pushes their division (top: B/T; bottom: B%T)  
   `div // B[19, 4]T --> B[3, 4]T`  
+- TODO: **nop**
 
 
 ### Syscalls
 syscalls expect a syscall code on top of the stack and are defined by that.
-  - **0 (print char)** : pops a value from the stack and prints it as a char
-  - TODO: 1 (print string): pops a value from the stack (string address) and uses it to print an asciiz string
-  - **2 (print uint)** : pops a value from the stack and prints it as an unsigned int
-	- TODO: 3 (print int): pops a value from the stack and prints it as an int
-	- TODO: 4 (read char): ...
+  - **0 (print char)** : pops a value from the stack and prints it as a char  
+  - TODO: 1 (print string): pops a value from the stack (string address) and uses it to print an asciiz string  
+  - **2 (print uint)** : pops a value from the stack and prints it as an unsigned int  
+	- TODO: 3 (print int): pops a value from the stack and prints it as an int  
+	- TODO: 4 (read char): ...  
+	- TODO: 5 (exit): exits execution with given exit code
 ### Lables
 ```
 @lable_name : defines a lable  
 ```
 
 ### Directives
-- **.byte N** : reserves `N` bytes as variables/array (embedded into the program and initialised as 0)
-- **.asciiz** : embeds into the program a null terminated ascii string `HELLO` -> `HELLO0`
+- **.byte N** : reserves `N` bytes as variables/array (embedded into the program and initialised as 0)  
+- **.asciiz** : embeds into the program a null terminated ascii string `HELLO` -> `HELLO0`  
 - **.include path/to/file.basm** : embeds a basm file into the program starting from that line  
-- **.def varname num** : defines a precompiler variable as `varname` and assigns to it `num`
-- ** TODO: .macro name{ body }** : defines a code macro that replaces every `name`
+- **.def varname num** : defines a precompiler variable as `varname` and assigns to it `num`  
+- **.macro name   
+      body   
+    .endmacro** : defines a macro that replaces every `name`  
+- **.ifndef SYMBOL** : enables compilation if `SYMBOL` is not defined
+- **.endif** : closes conditional compilation block
+- TODO: **.ifdef**
+- TODO: **.undef**
+- TODO: function like macros maybe? something like `pushN (N, val)` that gets replaced with N `push val`
+- TODO: then write some utility macros (like better loops)
 
 ### Comments
 ```
@@ -111,7 +121,6 @@ syscalls expect a syscall code on top of the stack and are defined by that.
 */  
 ```
 
-## MISSING
-TODO: implement precompiler .ifdef and .endif like headerguards
-TODO: support for macro definition
-TODO: refactor all instructions that work on more than 1 value on the stack to expect polish notation
+## MISSING  
+TODO: refactor all instructions that work on more than 1 value on the stack to expect polish notation  
+TODO: create an error module as panic replacement for proper error handling

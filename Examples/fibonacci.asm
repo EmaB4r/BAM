@@ -1,5 +1,7 @@
 //FIBONACCI
-    .def N 15
+.include "Examples/std/io.asm"
+.def N 15
+@main
     push 0 //iterator
     push 0 //first number
     jsr printuln
@@ -25,5 +27,3 @@
     push N //number of iterations until stop
     jne calc
     stop
-    
-.include "Examples/std/io.asm"
