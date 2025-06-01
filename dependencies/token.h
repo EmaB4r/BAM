@@ -51,6 +51,8 @@
     X(token_lable) \
     X(token_precompiler_include) \
     X(token_precompiler_def) \
+    X(token_precompiler_if) \
+    X(token_precompiler_ifdef) \
     X(token_precompiler_ifndef) \
     X(token_precompiler_endif) \
     X(token_precompiler_macro_def) \

@@ -71,7 +71,35 @@ void precompiler_def(lexer_t * lexer){
 void precompiler_ifndef(lexer_t * processed, lexer_t * pending){
     token_t current_token = lexer_get_next_token(pending);
     if(lable_is_present(current_token.str_val)){
-        while(lexer_get_next_token(pending).type != token_precompiler_endif);
+        int cnt = 1;
+        token_type type;
+        while(cnt > 0){
+            type = lexer_get_next_token(pending).type;
+            switch (type) {
+                case token_precompiler_if:
+                case token_precompiler_ifdef:
+                case token_precompiler_ifndef: cnt++; break;
+                case token_precompiler_endif: cnt--; break;
+                default: break;
+            }
+        }
+    }
+}
+void precompiler_ifdef(lexer_t * processed, lexer_t * pending){
+    token_t current_token = lexer_get_next_token(pending);
+    if(!lable_is_present(current_token.str_val)){
+        int cnt = 1;
+        token_type type;
+        while(cnt > 0){
+            type = lexer_get_next_token(pending).type;
+            switch (type) {
+                case token_precompiler_if:
+                case token_precompiler_ifdef:
+                case token_precompiler_ifndef: cnt++; break;
+                case token_precompiler_endif: cnt--; break;
+                default: break;
+            }
+        }
     }
 }
 
@@ -93,7 +121,8 @@ lexer_t process(char*filename, int add_terminator){
     while(current_token.type!=token_end){
         switch(current_token.type){
             case token_precompiler_macro_def : precompiler_macro(&pending_lexer); break;
-            case token_precompiler_ifndef: precompiler_ifndef(&processed_lexer, &pending_lexer);
+            case token_precompiler_ifdef: precompiler_ifdef(&processed_lexer, &pending_lexer); break;
+            case token_precompiler_ifndef: precompiler_ifndef(&processed_lexer, &pending_lexer); break;
             case token_precompiler_endif: break;
             case token_precompiler_include: precompiler_inlcude(&processed_lexer, &pending_lexer); break;
             case token_precompiler_def: precompiler_def(&pending_lexer); break;
